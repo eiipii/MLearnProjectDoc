@@ -1,11 +1,11 @@
 MLearn project charter
 ----------------------
 
-##Project purpose.
+## Project purpose.
 
 The MLearn project will focus on a systematic approach to create, use and share learning tools and materials.
 
-##Measurable objectives
+## Measurable objectives
 
 Objectives:
 
@@ -75,6 +75,6 @@ Out of scope:
 - Budget officer: Tomasz.
 - Audit officer: Luis.
 
-##Project approvals
+## Project approvals
 
 EIIPII - pending.
