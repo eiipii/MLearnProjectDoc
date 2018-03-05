@@ -48,7 +48,7 @@ Out of scope:
 ## High-level risks.
 
 
-## Stakeholder list.
+## Stakeholder types.
 
 - Sponsor
   * EIIPII

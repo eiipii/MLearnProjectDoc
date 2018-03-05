@@ -1,0 +1,36 @@
+{
+  "@context": {
+    "Person": "http://xmlns.com/foaf/0.1/Person",
+    "Organization": "http://xmlns.com/foaf/0.1/Organization",
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "Sponsor": "http://model.eiipii.com/taxonomy/project/stakeholder#Sponsor",
+    "Teacher": "http://model.eiipii.com/mlearn/concepts#Teacher",
+    "Student": "http://model.eiipii.com/mlearn/concepts#Student",
+    "Parent": "http://model.eiipii.com/mlearn/concepts#Parent",
+    "School": "http://model.eiipii.com/mlearn/concepts#School"
+  },
+  "@id": "_:graph",
+  "@graph": [
+    {
+      "@id": "https://model.eiipii.com/person/PawelCesarSanjuanSzklarz",
+      "@type": ["Person", "Sponsor", "Parent"],
+      "name": "Paweł Cesar Sanjuan Szklarz"
+    }, {
+      "@id": "https://model.eiipii.com/person/DagmaraBalabaniak",
+      "@type": ["Person", "Teacher"],
+      "name": "Dagmara Bałabaniak"
+    }, {
+      "@id": "https://model.eiipii.com/person/GabrielPietrzkowski",
+      "@type": ["Person", "Teacher"],
+      "name": "Gabriel Pietrzkowski"
+    }, {
+      "@id": "https://model.eiipii.com/person/ZofiaTeresaSanjuanJaniec",
+      "@type": ["Person", "Student"],
+      "name": "Zofia Teresa Sanjuan-Janiec"
+    }, {
+      "@id": "https://model.eiipii.com/organization/STO24",
+      "@type": ["Organization", "School"],
+      "name": "Szkoła Podstawowa nr 24 STO"
+    }
+  ]
+}
