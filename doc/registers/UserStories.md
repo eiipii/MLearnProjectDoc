@@ -120,3 +120,30 @@ It will be possible to define ad-hoc lessons independently of the plan.
 - The teacher accepts the plan or modifies it as long as it is required.
 
 A plan is just used to suggest and inform, so on every time the plan can be changed, event for lessons on the pass.
+
+US.0008 Teaching materials definition
+-------------------------------------
+
+Examples of teaching materials are:
+
+ - Text, books, articles
+ - Images, music, videos, presentations
+ - Statistical data
+ - Quiz, exercise list, test
+
+The followings are not example of teaching materials:
+
+ - Web pages. There are dynamic and change over time.
+ - Quiz generators, if it is not possible to recreate a previous state for reference and analysis.
+ - Reports, if the content may change over time.
+ - Quiz results, tests statistics
+
+Definition: 
+  
+  Teaching material is a immutable information that can be stored, retrieved , shared and used for learning.
+
+Teaching material can have the following attributes:
+
+ - Estimated time necessary to perform the material activities
+ - Difficulty level
+
