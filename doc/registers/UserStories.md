@@ -82,7 +82,7 @@ A assistance list will look like this:
 | Stud3   | Present |        |         |   PRESENT   |
 | Stud4   | Present |        |         |   REMOTELY  |
 
-where
+where presence status is defined as:
 - status enumeration: Present, Absent
 - attribute enumeration: Delayed, Remotely
 
@@ -99,7 +99,7 @@ where
 - Application selected the students status on base of the mobile information.
 - The teacher can override the calculated status to any other and can check/uncheck all the attributed.
 
-The mobile information will containt a summary of all accessible information from the student mobile application.
+The mobile information will contain a summary of all accessible information from the student mobile application.
 The display style for a student can be modified depending on the mobile information, like for example when the GPS
 coordinates do not match expected location.
 
@@ -109,15 +109,16 @@ delay time, then it should be calculated without the interaction of the users.
 US.0006 Lessons planing for VER-1
 ---------------------------------
 
-In the context of a lecture, a lesson plan can be defined.
-The plan will be used to guide the teacher in dependency of the current time and GPS location.
+In the context of a lecture, a lessons plan can be defined.
+The lessons plan will be used to guide the teacher in dependency of the current time and GPS location.
 It will be possible to define ad-hoc lessons independently of the plan.  
 
-- For any lecture, the systems suggest to the user to create a lessons plan
-- Teacher selects a lecture and starts the plan definition
+For any lecture without lessons plan, the systems suggest to the user to create a lessons plan
+
+- Teacher selects a lecture and starts the lessons plan definition
 - Systems ask for basic plan parameters: duration, etc
 - System suggest different plan wizards: Periodical, weekly, custom.
 - The teacher gets a report with the days/hours generated and relevant holidays information.
 - The teacher accepts the plan or modifies it as long as it is required.
 
-A plan is just used to suggest and inform, so on every time the plan can be changed, event for lessons on the pass.
+A plan is just used to suggest and inform, so on every time the lessons plan can be changed, even for lessons on the pass.

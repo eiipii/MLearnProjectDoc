@@ -1,12 +1,14 @@
 Requirements
 ============
 
+## Business requirements
 
-| id | Actor    | Interface    | Action                              |
-|----|----------|--------------|-------------------------------------|
-| 1  | Teacher  | Web          | Define learning group               |
-| 2  | ALL      | Web          | Register account                    |
-| 3  |          |              |                                     |
-| 4  |          |              |                                     |
-| 5  |          |              |                                     |
-| 6  |          |              |                                     |
+## User requirements
+
+## Functional requirements
+
+## Quality of service requirements
+
+## Assumptions and constraints
+
+## Implementation requirements

@@ -73,10 +73,10 @@ The possible value of a presence status is defined on the lesson type and consis
 - Single value from predefined status enumeration
 - Set of values from predefined attributes enumeration
 
-Lesson plan
+Lessons plan
 -----------
 
-A **lesson plan** is a schedule of potential lessons in time.
+A **lessons plan** is a schedule of potential lessons in time.
 
 Lecture
 -------
