@@ -122,3 +122,33 @@ For any lecture without lessons plan, the systems suggest to the user to create 
 - The teacher accepts the plan or modifies it as long as it is required.
 
 A plan is just used to suggest and inform, so on every time the lessons plan can be changed, even for lessons on the pass.
+
+
+US.0007 Learning material creation and use
+------------------------------------------
+
+### Register a material from file
+
+As a teacher
+- Open the material registration page
+- Select presentation from the list of materials types
+- Select the file of the presentation
+- A unique URI is generated and assigned to the material.
+- After the file is uploaded, a summary of the detected type and metadata is presented
+- If license information is not available on the metadata, then a license selection form is provided
+- Copyright warning information is presented and must be confirmed 
+- Teacher confirms the material creation.
+
+### Add metadata to material
+
+As a student during a lesson
+- Select a learning material (URI in context selected) from the list provided from the teacher
+- Select details and use "add info" button
+- From a popup list select in with context you want to add the information: Lesson, Lecture, Personal
+- Use a metadata form to add attributes to the material in the selected context.
+
+The different context change when the attribute is visible and used for search:
+- Personal: Always used and visible
+- Lecture: Only when present lecture context is used
+- Lesson: Only when present lesson context is used
+
