@@ -74,6 +74,7 @@ Out of scope:
 - Analytic: Dagmara.
 - Budget officer: Tomasz.
 - Audit officer: Luis.
+- Domain expert: Dagmara, Gabriel.
 
 ## Project approvals
 

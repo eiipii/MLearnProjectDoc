@@ -46,7 +46,7 @@ Other emails can be deleted.
 US.0004 Working profile
 -----------------------
 
-A account can be user with different profiles. A user can be a student on different schools, training companies, public courses, etc.
+A account can be used with different profiles. A user can be a student on different schools, training companies, public courses, etc.
 There are also teacher profiles that can be related to a school, company, certifications, etc.
 
 ### Register as teacher.
@@ -92,6 +92,13 @@ where presence status is defined as:
 - OPTIONAL: It is possible to create a new lesson independently of the plan
 - Teacher checks all present persons, maybe reading the list and check on the list
 
+### Checking list by voice recognition
+
+- The teacher opens the groups lists for the current lesson according to the plan.
+- The voice recognition options is enabled
+- Students says they lastname in order, and the application records and analyzes the sound to verify presence.
+- Teacher can review results and correct any errors.
+
 ### Checking list with students interaction by mobile app.
 
 - Opening the list group, the system send a request for information to all students mobile apps.
@@ -123,7 +130,6 @@ For any lecture without lessons plan, the systems suggest to the user to create 
 
 A plan is just used to suggest and inform, so on every time the lessons plan can be changed, even for lessons on the pass.
 
-
 US.0007 Learning material creation and use
 ------------------------------------------
 
@@ -152,3 +158,13 @@ The different context change when the attribute is visible and used for search:
 - Lecture: Only when present lecture context is used
 - Lesson: Only when present lesson context is used
 
+US.008 Quiz preparation
+-----------------------
+
+A quiz is a list of questions with several response options. Correct answer to a questions can be one or many options.
+
+As a teacher
+- Open the quiz application link (https://quiz..../)
+- Login is realized automatically or user is redirected to login
+- A new quiz can be created or a previous file can be uploaded to edit
+- After edition, the quiz can be saved as a epub file.  

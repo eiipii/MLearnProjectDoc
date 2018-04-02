@@ -37,11 +37,16 @@ Learning tool
 
 A **learning tool** is a program or functionality that allows to interact with a learning material, possible allowing to generate a learning result.
 
+Activity
+--------
+
+A **activity** is an interaction of a user with a teaching material with a specific learning tool.
+
  
 Learning results
 ----------------
 
-A **learning result** is the immutable final response to a learning material provided by a user using a learning tool.
+A **learning result** is the immutable final response to a learning material provided by a user using a learning tool during an activity.
 
 Group
 -----
@@ -62,7 +67,9 @@ A lesson is identified by a unique URN.
 Lesson type
 -----------
 
-TODO
+A predefined **lesson type** defines a order for the realization of a lesson. A lesson type have a list of named lesson periods. A lesson period defines a goal.
+
+A lesson instance will link to each period a set of potential activities and materials.
 
 Presence status
 ---------------
@@ -87,22 +94,6 @@ A **lecture** defined a context with
  - One or many groups
  - One or many lesson types
  - One lesson plan
-
-TODO: Czy to definiuje nasze pojecia:
-- Kurs 
-  - Wyklad (1 nauczyciel, 1 grupa)
-  - Wyklad ze cwiczeniami (1 nauczyciel, 1 grupa, 2 typu zajec)
-  - Wyklad  + grupy prowadzone przez cwiczeniowcow. (1+n nauczycieli, n grupa)
-  - Seminarium (Tu student moze tez wrzucac materialy)
-
-Activities
-----------
-
-A **activity** is an interaction of a user with a teaching material.
-
-TODO: czy to definiuje
-- Praca domowa, wejsciowka, zejsciowka. To jest zwiazane z typem zajec, po przed, co po, co w trakcie.
-
 
 Organization
 ------------
