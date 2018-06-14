@@ -1,8 +1,12 @@
 package com.eiipii.mlearning.model.reference
 
 import java.net.URI
+
 import io.lemonlabs.uri.Urn
 import java.time.{Duration, Instant}
+
+import com.eiipii.mlearning.model.reference.PresenceAttribute.PresenceAttribute
+import com.eiipii.mlearning.model.reference.PresenceStatus.PresenceStatus
 
 object MLearnModel extends UserProfileProperties {
 
@@ -57,7 +61,7 @@ trait UserProfileProperties {
 
 case class MLearnApplicationState(accounts: Set[UserAccount] = Set(),
                                   profileLectures: Map[UserProfileID, Set[Lecture]] = Map(),
-                                  profileGroups: Map[UserProfileID,Set[StudentsGroup]] = Map())
+                                  profileGroups: Map[UserProfileID, Set[StudentsGroup]] = Map())
 
 //User related information
 case class UserAccount(userID: UserID,
@@ -69,22 +73,15 @@ case class UserAccount(userID: UserID,
 case class UserProfile(profileID: UserProfileID, isTeacher: Boolean)
 
 // Model
+object PresenceStatus extends Enumeration {
+  type PresenceStatus = Value
+  val present, notPresent = Value
+}
 
-
-sealed trait PresenceStatus
-
-case object Present extends PresenceStatus
-
-case object NotPresent extends PresenceStatus
-
-
-sealed trait PresenceAttribute
-
-case object Delayed extends PresenceAttribute
-
-case object Online extends PresenceAttribute
-
-case object Sick extends PresenceAttribute
+object PresenceAttribute extends Enumeration {
+  type PresenceAttribute = Value
+  val delayed, online, sick = Value
+}
 
 case class PresenceInformation(status: PresenceStatus, attributes: Set[PresenceAttribute])
 
