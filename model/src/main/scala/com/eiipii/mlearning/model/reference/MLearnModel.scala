@@ -16,20 +16,26 @@ object MLearnModel extends UserProfileProperties {
   val userProfileIDnid = "mlearn-userProfile"
 
   type UserProfileID = Urn //urn:mlearn-userProfile:NSS_PARTIAL
-  type ToolID = Urn //urn:mlearn-tool:NSS_PARTIAL
   type ActivityID = Urn //urn:mlearn-activity:NSS_PARTIAL
   val StudentsGroupIDnid = "mlearn-studentsGroup"
   type StudentsGroupID = Urn //urn:mlearn-studentsGroup:NSS_PARTIAL
-  type lectureID = Urn //urn:mlearn-lecture:NSS_PARTIAL
+  val LectureIDnid = "mlearn-lecture"
+  type LectureID = Urn //urn:mlearn-lecture:NSS_PARTIAL
+  val LessonIDnid = "mlearn-lesson"
   type LessonID = Urn //urn:mlearn-lesson:NSS_PARTIAL
   type LessonTypeID = Urn //urn:mlearn-lessonType:NSS_PARTIAL
 
   type MaterialID = URI
   type ResultID = URI
+  type ToolID = URI //TODO udpate documentation to have tool as uri
 
   type ProfileReference = String
 
   def createUserID(partial: String): UserID = Urn(userIDnid, partial)
+
+  def createLectureID(partial: String): LectureID = Urn(LectureIDnid, partial)
+
+  def createLessonID(partial: String): LessonID = Urn(LessonIDnid, partial)
 
   def createStudentsGroupID(groupPartial: String): StudentsGroupID = Urn(StudentsGroupIDnid, groupPartial)
 
@@ -85,19 +91,27 @@ object PresenceAttribute extends Enumeration {
 
 case class PresenceInformation(status: PresenceStatus, attributes: Set[PresenceAttribute])
 
-sealed trait Lecture
+sealed trait Lecture {
+  def lectureID: LectureID
+}
 
-//TODO add lecture description
-case class SingleLecture(teacher: UserProfileID,
+case class SingleLecture(lectureID: LectureID,
+                         info: LectureInfo,
+                         teacher: UserProfileID,
                          group: StudentsGroupID,
                          harmonogram: List[Lesson]) extends Lecture
 
-case class LectureWithExercises(mainTeacher: UserProfileID,
+case class LectureWithExercises(lectureID: LectureID,
+                                info: LectureInfo,
+                                mainTeacher: UserProfileID,
                                 teacherStaff: Set[UserProfileID],
                                 groups: Set[StudentsGroupID],
                                 exerciseTeachers: Map[UserProfileID, StudentsGroupID],
                                 harmonogram: List[Lesson]) extends Lecture
 
+case class LectureInfo(introduction: String,
+                       shortDescription: String,
+                       description: String)
 
 case class Lesson(lessonId: LessonID,
                   description: LessonDescription,

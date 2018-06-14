@@ -1,5 +1,8 @@
 package com.eiipii.mlearning.model.reference
 
+import java.net.URI
+import java.time.{Duration, Instant}
+
 import com.eiipii.mlearning.model.reference.MLearnModel.UserProfileID
 import org.scalatest.FlatSpec
 
@@ -75,6 +78,7 @@ class MLearnModelTest extends FlatSpec {
     )
 
     val groupID001 = MLearnModel.createStudentsGroupID("grupa0001")
+    val lecture001ID = MLearnModel.createLectureID("lecture001")
     val afterLectureCreate = MLearnApplicationState(
       Set(
         UserAccount(
@@ -86,7 +90,12 @@ class MLearnModelTest extends FlatSpec {
       ),
       Map(
         defaultProfileID -> Set(
-          SingleLecture(defaultProfileID, groupID001, List())
+          SingleLecture(
+            lecture001ID,
+            LectureInfo("intro", "opis", "pelne opis"),
+            defaultProfileID,
+            groupID001,
+            List())
         )
       ),
       Map(
@@ -119,7 +128,12 @@ class MLearnModelTest extends FlatSpec {
       ),
       Map(
         defaultProfileID -> Set(
-          SingleLecture(defaultProfileID, groupID001, List())
+          SingleLecture(
+            lecture001ID,
+            LectureInfo("intro", "opis", "pelne opis"),
+            defaultProfileID,
+            groupID001,
+            List())
         )
       ),
       Map(
@@ -128,6 +142,69 @@ class MLearnModelTest extends FlatSpec {
         )
       )
     )
+
+
   }
 
+  it should "create a lesson plan for a lecture" in {
+    val lecture001ID = MLearnModel.createLectureID("lecture001")
+    val teacherID = MLearnModel.createUserID("user1")
+    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(teacherID)
+    val groupID001 = MLearnModel.createStudentsGroupID("grupa0001")
+    // Now lesson plan is created
+    val singleLectureJustCreated = SingleLecture(
+      lecture001ID,
+      LectureInfo("intro", "opis", "pelne opis"),
+      defaultProfileID,
+      groupID001,
+      List())
+
+    val material1 = URI.create("https://material.eiipii.com/example/material1.pdf")
+    val material2 = URI.create("https://material.eiipii.com/example/material2.pdf")
+    val material3 = URI.create("https://material.eiipii.com/example/material3.pdf")
+
+    val tool1 = URI.create("https://tools.eiipii.com/example/quizApp.xml")
+    val tool2 = URI.create("https://tools.eiipii.com/example/losowanie.xml")
+    val toolOnlineJavascriptIDE = URI.create("https://tools.eiipii.com/example/javascriptOnlineIDE.xml")
+
+    val lectureAfterLessonPlan = SingleLecture(
+      lecture001ID,
+      LectureInfo("intro", "opis", "pelne opis"),
+      defaultProfileID,
+      groupID001,
+      List(
+        Lesson(
+          MLearnModel.createLessonID("less001"),
+          LessonDescription("Wstep do programowanie", "Co robia komputery i dlaczego. ...", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
+          Instant.now(),
+          Duration.ofHours(1),
+          teacherID,
+          Set(groupID001),
+          LessonPlan(
+            List(
+              LessonPlanPeriod("_default", List(material1, material2), List(tool1))
+            )
+          )
+        ),
+        Lesson(
+          MLearnModel.createLessonID("less002"),
+          LessonDescription("Operacje na liczbach", "Proste operacje na liczbach i pokazanie problemow z reprezentacja liczb na komputerze.", "umiejetnosc implementacji wzorow i rownan."),
+          Instant.now(), //TODO api do tworzenia czasu
+          Duration.ofHours(1),
+          teacherID,
+          Set(groupID001),
+          LessonPlan(
+            List(
+              LessonPlanPeriod("Teoria", List(material1, material3), List(tool2)),
+              LessonPlanPeriod("Cwiczenia", List(material1, material3), List(tool2)),
+              LessonPlanPeriod("Przyklady niepoprawnych obliczen", List(material1, material3), List(tool2)),
+              LessonPlanPeriod("Cwiczenia z wartosciami granicznymi", List(material3), List(toolOnlineJavascriptIDE))
+            )
+          )
+        )
+      )
+    )
+
+
+  }
 }
