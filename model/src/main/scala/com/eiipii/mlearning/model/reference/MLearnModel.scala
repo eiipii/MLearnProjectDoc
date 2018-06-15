@@ -23,11 +23,12 @@ object MLearnModel extends UserProfileProperties {
   type LectureID = Urn //urn:mlearn-lecture:NSS_PARTIAL
   val LessonIDnid = "mlearn-lesson"
   type LessonID = Urn //urn:mlearn-lesson:NSS_PARTIAL
+  val LessonTypeIDnid = "mlearn-lessonType"
   type LessonTypeID = Urn //urn:mlearn-lessonType:NSS_PARTIAL
 
   type MaterialID = URI
   type ResultID = URI
-  type ToolID = URI //TODO udpate documentation to have tool as uri
+  type ToolID = URI
 
   type ProfileReference = String
 

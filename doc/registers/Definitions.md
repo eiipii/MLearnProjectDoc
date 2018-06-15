@@ -50,10 +50,11 @@ Teaching material can have attributes as:
 Learning tool
 -------------
 
-Identifier: URN
-Schema: urn:mlearn:tool:NSS_PARTIAL
+Identifier: URI
 
 A **learning tool** is a program or functionality that allows to interact with a learning material, possible allowing to generate a learning result.
+
+A tool may be presented as the URL to the related tool page. For tools integrated with MLearning, the URL will lead to a metadata information about the tools interfaces and capabilities. 
 
 Activity
 --------
