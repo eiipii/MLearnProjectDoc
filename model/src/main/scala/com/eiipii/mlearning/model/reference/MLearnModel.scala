@@ -2,7 +2,7 @@ package com.eiipii.mlearning.model.reference
 
 import java.net.URI
 
-import io.lemonlabs.uri.Urn
+import io.lemonlabs.uri.{Url, Urn}
 import java.time.{Duration, Instant}
 
 import com.eiipii.mlearning.model.reference.PresenceAttribute.PresenceAttribute
@@ -17,8 +17,6 @@ object MLearnModel extends UserProfileProperties {
 
   type UserProfileID = Urn //urn:mlearn-userProfile:NSS_PARTIAL
   type ActivityID = Urn //urn:mlearn-activity:NSS_PARTIAL
-  val StudentsGroupIDnid = "mlearn-studentsGroup"
-  type StudentsGroupID = Urn //urn:mlearn-studentsGroup:NSS_PARTIAL
   val LectureIDnid = "mlearn-lecture"
   type LectureID = Urn //urn:mlearn-lecture:NSS_PARTIAL
   val LessonIDnid = "mlearn-lesson"
@@ -37,8 +35,6 @@ object MLearnModel extends UserProfileProperties {
   def createLectureID(partial: String): LectureID = Urn(LectureIDnid, partial)
 
   def createLessonID(partial: String): LessonID = Urn(LessonIDnid, partial)
-
-  def createStudentsGroupID(groupPartial: String): StudentsGroupID = Urn(StudentsGroupIDnid, groupPartial)
 
   type Email = String
 }
@@ -67,8 +63,8 @@ trait UserProfileProperties {
 //Application status per user:
 
 case class MLearnApplicationState(accounts: Set[UserAccount] = Set(),
-                                  profileLectures: Map[UserProfileID, Set[Lecture]] = Map(),
-                                  profileGroups: Map[UserProfileID, Set[StudentsGroup]] = Map())
+                                  profileLectures: Map[UserProfileID, Set[Lecture]] = Map()
+                                 )
 
 //User related information
 case class UserAccount(userID: UserID,
@@ -79,36 +75,17 @@ case class UserAccount(userID: UserID,
 
 case class UserProfile(profileID: UserProfileID, isTeacher: Boolean)
 
-// Model
-object PresenceStatus extends Enumeration {
-  type PresenceStatus = Value
-  val present, notPresent = Value
-}
+//Lecture model
+case class Lecture(lectureID: LectureID,
+                   info: LectureInfo,
+                   teacher: UserProfileID,
+                   studentsGroup: StudentsGroup,
+                   lectureResources: ResourcesPocket,
+                   schedule: List[Lesson] = List())
 
-object PresenceAttribute extends Enumeration {
-  type PresenceAttribute = Value
-  val delayed, online, sick = Value
-}
-
-case class PresenceInformation(status: PresenceStatus, attributes: Set[PresenceAttribute])
-
-sealed trait Lecture {
-  def lectureID: LectureID
-}
-
-case class SingleLecture(lectureID: LectureID,
-                         info: LectureInfo,
-                         teacher: UserProfileID,
-                         group: StudentsGroupID,
-                         harmonogram: List[Lesson]) extends Lecture
-
-case class LectureWithExercises(lectureID: LectureID,
-                                info: LectureInfo,
-                                mainTeacher: UserProfileID,
-                                teacherStaff: Set[UserProfileID],
-                                groups: Set[StudentsGroupID],
-                                exerciseTeachers: Map[UserProfileID, StudentsGroupID],
-                                harmonogram: List[Lesson]) extends Lecture
+case class StudentsGroup(acceptedStudents: Set[UserProfileID] = Set(),
+                         rejectedStudents: Set[UserProfileID] = Set(),
+                         registrationClosed: Boolean = false)
 
 case class LectureInfo(introduction: String,
                        shortDescription: String,
@@ -118,36 +95,37 @@ case class Lesson(lessonId: LessonID,
                   description: LessonDescription,
                   start: Instant,
                   duration: Duration,
-                  teacher: UserProfileID,
-                  lessonGroups: Set[StudentsGroupID],
-                  plan: LessonPlan)
+                  plan: List[LessonPlanPeriod] = List())
 
 case class LessonDescription(title: String,
                              description: String,
                              goal: String)
 
-case class LessonPlan(lessonPeriods: List[LessonPlanPeriod])
+case class LessonPlanPeriod(name: String, resources: ResourcesPocket)
 
-case class LessonPlanPeriod(name: String,
-                            materials: List[MaterialID],
-                            tools: List[ToolID])
+case class ResourcesPocket(materials: Set[MaterialID] = Set(), tools: Set[ToolID] = Set())
 
 
-case class Activity(activityId: ActivityID,
-                    tool: ToolID,
-                    material: MaterialID)
+//Lesson execution model
 
-case class Result(resultId: ResultID,
-                  activity: ActivityID,
-                  userProfile: UserProfileID)
+case class LessonExecutionHistory(presenceInfo: List[PresenceInformation],
+                                  lessonLog: List[LessonLogEntry])
+
+sealed trait LessonLogEntry
+
+case class Activity(activityId: ActivityID, tool: ToolID, material: MaterialID)
+
+case class Result(resultId: ResultID, activity: ActivityID, userProfile: UserProfileID)
 
 
-case class StudentsGroup(groupId: StudentsGroupID,
-                         students: Set[UserProfileID])
+case class PresenceInformation(student: UserProfileID, status: PresenceStatus, attributes: Set[PresenceAttribute])
 
+object PresenceStatus extends Enumeration {
+  type PresenceStatus = Value
+  val present, notPresent = Value
+}
 
-case class LessonType(lessonTypeId: LessonTypeID,
-                      lessonTypeName: String,
-                      periods: List[LessonPeriod])
-
-case class LessonPeriod(name: String, goal: String)
+object PresenceAttribute extends Enumeration {
+  type PresenceAttribute = Value
+  val delayed, online, sick = Value
+}

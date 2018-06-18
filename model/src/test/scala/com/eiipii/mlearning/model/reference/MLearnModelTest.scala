@@ -57,7 +57,7 @@ class MLearnModelTest extends FlatSpec {
           MLearnModel.createUserID("user1"),
           "user1@eiipii.com",
           validated = true,
-          Set("secondEmail@eiipii.com"),
+          Set(),
           Map(defaultProfileID -> UserProfile(defaultProfileID, true)))
       )
     )
@@ -77,7 +77,6 @@ class MLearnModelTest extends FlatSpec {
       )
     )
 
-    val groupID001 = MLearnModel.createStudentsGroupID("grupa0001")
     val lecture001ID = MLearnModel.createLectureID("lecture001")
     val afterLectureCreate = MLearnApplicationState(
       Set(
@@ -90,22 +89,18 @@ class MLearnModelTest extends FlatSpec {
       ),
       Map(
         defaultProfileID -> Set(
-          SingleLecture(
+          Lecture(
             lecture001ID,
             LectureInfo("intro", "opis", "pelne opis"),
             defaultProfileID,
-            groupID001,
-            List())
-        )
-      ),
-      Map(
-        defaultProfileID -> Set(
-          StudentsGroup(groupID001, Set())
+            StudentsGroup(),
+            ResourcesPocket())
         )
       )
     )
     val student1 = MLearnModel.createUserID("student1")
     val student2 = MLearnModel.createUserID("student2")
+    val student3 = MLearnModel.createUserID("student2")
     val afterStudentsRegistration = MLearnApplicationState(
       Set(
         UserAccount(
@@ -124,21 +119,24 @@ class MLearnModelTest extends FlatSpec {
           student2,
           "student2@eiipii.com",
           validated = true
+        ),
+        UserAccount(
+          student3,
+          "student3@eiipii.com",
+          validated = true
         )
       ),
       Map(
         defaultProfileID -> Set(
-          SingleLecture(
+          Lecture(
             lecture001ID,
             LectureInfo("intro", "opis", "pelne opis"),
             defaultProfileID,
-            groupID001,
-            List())
-        )
-      ),
-      Map(
-        defaultProfileID -> Set(
-          StudentsGroup(groupID001, Set(student2, student1))
+            StudentsGroup(
+              acceptedStudents = Set(student2, student1),
+              rejectedStudents = Set(student3),
+              registrationClosed = true),
+            ResourcesPocket())
         )
       )
     )
@@ -149,15 +147,22 @@ class MLearnModelTest extends FlatSpec {
   it should "create a lesson plan for a lecture" in {
     val lecture001ID = MLearnModel.createLectureID("lecture001")
     val teacherID = MLearnModel.createUserID("user1")
+    val student1 = MLearnModel.createUserID("student1")
+    val student2 = MLearnModel.createUserID("student2")
+    val student3 = MLearnModel.createUserID("student2")
     val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(teacherID)
-    val groupID001 = MLearnModel.createStudentsGroupID("grupa0001")
     // Now lesson plan is created
-    val singleLectureJustCreated = SingleLecture(
+    val singleLectureJustCreated = Lecture(
       lecture001ID,
       LectureInfo("intro", "opis", "pelne opis"),
       defaultProfileID,
-      groupID001,
-      List())
+      StudentsGroup(
+        acceptedStudents = Set(student2, student1),
+        rejectedStudents = Set(student3),
+        registrationClosed = true),
+      ResourcesPocket()
+    )
+
 
     val material1 = URI.create("https://material.eiipii.com/example/material1.pdf")
     val material2 = URI.create("https://material.eiipii.com/example/material2.pdf")
@@ -167,23 +172,23 @@ class MLearnModelTest extends FlatSpec {
     val tool2 = URI.create("https://tools.eiipii.com/example/losowanie.xml")
     val toolOnlineJavascriptIDE = URI.create("https://tools.eiipii.com/example/javascriptOnlineIDE.xml")
 
-    val lectureAfterLessonPlan = SingleLecture(
+    val lectureAfterLessonPlan = Lecture(
       lecture001ID,
       LectureInfo("intro", "opis", "pelne opis"),
       defaultProfileID,
-      groupID001,
+      StudentsGroup(
+        acceptedStudents = Set(student2, student1),
+        rejectedStudents = Set(student3),
+        registrationClosed = true),
+      ResourcesPocket(Set(material1, material2), Set(tool1)),
       List(
         Lesson(
           MLearnModel.createLessonID("less001"),
           LessonDescription("Wstep do programowanie", "Co robia komputery i dlaczego. ...", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
           Instant.now(),
           Duration.ofHours(1),
-          teacherID,
-          Set(groupID001),
-          LessonPlan(
-            List(
-              LessonPlanPeriod("_default", List(material1, material2), List(tool1))
-            )
+          List(
+            LessonPlanPeriod("_default", ResourcesPocket(Set(material1, material2), Set(tool1)))
           )
         ),
         Lesson(
@@ -191,20 +196,16 @@ class MLearnModelTest extends FlatSpec {
           LessonDescription("Operacje na liczbach", "Proste operacje na liczbach i pokazanie problemow z reprezentacja liczb na komputerze.", "umiejetnosc implementacji wzorow i rownan."),
           Instant.now(), //TODO api do tworzenia czasu
           Duration.ofHours(1),
-          teacherID,
-          Set(groupID001),
-          LessonPlan(
-            List(
-              LessonPlanPeriod("Teoria", List(material1, material3), List(tool2)),
-              LessonPlanPeriod("Cwiczenia", List(material1, material3), List(tool2)),
-              LessonPlanPeriod("Przyklady niepoprawnych obliczen", List(material1, material3), List(tool2)),
-              LessonPlanPeriod("Cwiczenia z wartosciami granicznymi", List(material3), List(toolOnlineJavascriptIDE))
+          List(
+            LessonPlanPeriod("Teoria", ResourcesPocket(Set(material1, material3), Set(tool2))),
+            LessonPlanPeriod("Cwiczenia", ResourcesPocket(Set(material1, material3), Set(tool2))),
+            LessonPlanPeriod("Przyklady niepoprawnych obliczen", ResourcesPocket(Set(material1, material3), Set(tool2))),
+            LessonPlanPeriod("Cwiczenia z wartosciami granicznymi", ResourcesPocket(Set(material3), Set(toolOnlineJavascriptIDE))
             )
           )
         )
       )
     )
-
 
   }
 }
