@@ -3,95 +3,20 @@ package com.eiipii.mlearning.model.reference
 import java.net.URI
 import java.time.{Duration, Instant}
 
-import com.eiipii.mlearning.model.reference.MLearnModel.UserProfileID
-import io.lemonlabs.uri.{Uri, Urn}
+import com.eiipii.mlearning.model.activities._
+import com.eiipii.mlearning.model.lecture._
+import com.eiipii.mlearning.model.reference.MLearnTypeNamespace._
+import com.eiipii.mlearning.model.users._
+import io.lemonlabs.uri.Urn
 import org.scalatest.{FlatSpec, Matchers}
 
 class MLearnModelTest extends FlatSpec with Matchers {
 
 
-  it should "create userID and profiles" in {
-
-    val userID: Urn = MLearnModel.createUserID("testUser1")
-    userID.toString() shouldBe ("urn:mlearn-user:testUser1")
-
-    val profile1 = MLearnModel.createUserProfile(userID, "NauczycielSTO")
-    val profile2 = MLearnModel.createUserProfile(userID, "EnglishOK")
-    profile1.toString() shouldBe ("urn:mlearn-userProfile:testUser1_NauczycielSTO")
-    profile2.toString() shouldBe ("urn:mlearn-userProfile:testUser1_EnglishOK")
-  }
-  it should "has default profile" in {
-
-    val userID: Urn = MLearnModel.createUserID("testUser1")
-    userID.toString() shouldBe ("urn:mlearn-user:testUser1")
-
-    val defaultProfile = MLearnModel.createDefaultProfile(userID)
-
-    defaultProfile.toString() shouldBe ("urn:mlearn-userProfile:testUser1__default")
-  }
-
-  it should "Create a user account" in {
-
-    val initialState = MLearnApplicationState()
-
-    val userID = MLearnModel.createUserID("user1")
-    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(userID)
-
-    val userAdded = MLearnApplicationState(
-      Set(
-        UserAccount(userID, "user1@eiipii.com", validated = false, Set(),
-          Map(defaultProfileID -> UserProfile(defaultProfileID, false)))
-      )
-    )
-
-    val userValidated = MLearnApplicationState(
-      Set(
-        UserAccount(MLearnModel.createUserID("user1"), "user1@eiipii.com", validated = true)
-      )
-    )
-
-  }
-
-  it should "Add email to user" in {
-
-    val userValidated = MLearnApplicationState(
-      Set(
-        UserAccount(MLearnModel.createUserID("user1"), "user1@eiipii.com", validated = true)
-      )
-    )
-
-    val afterEmailAdded = MLearnApplicationState(
-      Set(
-        UserAccount(MLearnModel.createUserID("user1"), "user1@eiipii.com", validated = true, Set("secondEmail@eiipii.com"))
-      )
-    )
-  }
-
-  it should "Enable user teacher mode" in {
-
-    val userID = MLearnModel.createUserID("user1")
-    val userValidated = MLearnApplicationState(
-      Set(
-        UserAccount(userID, "user1@eiipii.com", validated = true)
-      )
-    )
-    //Administrator accepts requests, then:
-    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(userID)
-    val afterProfileToTeacher = MLearnApplicationState(
-      Set(
-        UserAccount(
-          MLearnModel.createUserID("user1"),
-          "user1@eiipii.com",
-          validated = true,
-          Set(),
-          Map(defaultProfileID -> UserProfile(defaultProfileID, true)))
-      )
-    )
-  }
 
   it should "Create first lecture" in {
-    val teacherID = MLearnModel.createUserID("user1")
-    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(teacherID)
+    val teacherID = MLearnTypeNamespace.createUserID("user1")
+    val defaultProfileID: UserProfileID = MLearnTypeNamespace.createDefaultProfile(teacherID)
     val teacherUser = MLearnApplicationState(
       Set(
         UserAccount(
@@ -103,7 +28,7 @@ class MLearnModelTest extends FlatSpec with Matchers {
       )
     )
 
-    val lecture001ID = MLearnModel.createLectureID("lecture001")
+    val lecture001ID = MLearnTypeNamespace.createLectureID("lecture001")
     val afterLectureCreate = MLearnApplicationState(
       Set(
         UserAccount(
@@ -124,9 +49,9 @@ class MLearnModelTest extends FlatSpec with Matchers {
         )
       )
     )
-    val student1 = MLearnModel.createUserID("student1")
-    val student2 = MLearnModel.createUserID("student2")
-    val student3 = MLearnModel.createUserID("student2")
+    val student1 = MLearnTypeNamespace.createUserID("student1")
+    val student2 = MLearnTypeNamespace.createUserID("student2")
+    val student3 = MLearnTypeNamespace.createUserID("student2")
     val afterStudentsRegistration = MLearnApplicationState(
       Set(
         UserAccount(
@@ -171,12 +96,12 @@ class MLearnModelTest extends FlatSpec with Matchers {
   }
 
   it should "create a lesson plan for a lecture" in {
-    val lecture001ID = MLearnModel.createLectureID("lecture001")
-    val teacherID = MLearnModel.createUserID("user1")
-    val student1 = MLearnModel.createUserID("student1")
-    val student2 = MLearnModel.createUserID("student2")
-    val student3 = MLearnModel.createUserID("student2")
-    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(teacherID)
+    val lecture001ID = MLearnTypeNamespace.createLectureID("lecture001")
+    val teacherID = MLearnTypeNamespace.createUserID("user1")
+    val student1 = MLearnTypeNamespace.createUserID("student1")
+    val student2 = MLearnTypeNamespace.createUserID("student2")
+    val student3 = MLearnTypeNamespace.createUserID("student2")
+    val defaultProfileID: UserProfileID = MLearnTypeNamespace.createDefaultProfile(teacherID)
     // Now lesson plan is created
     val singleLectureJustCreated = Lecture(
       lecture001ID,
@@ -212,7 +137,7 @@ class MLearnModelTest extends FlatSpec with Matchers {
       ResourcesPocket(Set(material1, material2), Set(tool1)),
       List(
         Lesson(
-          MLearnModel.createLessonID("less001"),
+          MLearnTypeNamespace.createLessonID("less001"),
           LessonDescription("Wstep do programowanie", "Co robia komputery i dlaczego. ...", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
           Instant.now(),
           Duration.ofHours(1),
@@ -221,7 +146,7 @@ class MLearnModelTest extends FlatSpec with Matchers {
           )
         ),
         Lesson(
-          MLearnModel.createLessonID("less002"),
+          MLearnTypeNamespace.createLessonID("less002"),
           LessonDescription("Operacje na liczbach", "Proste operacje na liczbach i pokazanie problemow z reprezentacja liczb na komputerze.", "umiejetnosc implementacji wzorow i rownan."),
           Instant.now(), //TODO api do tworzenia czasu
           Duration.ofHours(1),
@@ -234,7 +159,7 @@ class MLearnModelTest extends FlatSpec with Matchers {
           )
         ),
         Lesson(
-          MLearnModel.createLessonID("less003"),
+          MLearnTypeNamespace.createLessonID("less003"),
           LessonDescription("Sprawdzam", "test", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
           Instant.now(),
           Duration.ofHours(1),
@@ -255,12 +180,12 @@ class MLearnModelTest extends FlatSpec with Matchers {
 
     val tool1 = URI.create("https://tools.eiipii.com/example/quizApp.xml")
     val tool2 = URI.create("https://tools.eiipii.com/example/losowanie.xml")
-    val student1 = MLearnModel.createUserID("student1")
-    val student2 = MLearnModel.createUserID("student2")
-    val student3 = MLearnModel.createUserID("student2")
+    val student1 = MLearnTypeNamespace.createUserID("student1")
+    val student2 = MLearnTypeNamespace.createUserID("student2")
+    val student3 = MLearnTypeNamespace.createUserID("student2")
     //For lesson
     Lesson(
-      MLearnModel.createLessonID("less001"),
+      MLearnTypeNamespace.createLessonID("less001"),
       LessonDescription("Wstep do programowanie", "Co robia komputery i dlaczego. ...", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
       Instant.now(),
       Duration.ofHours(1),
@@ -270,7 +195,8 @@ class MLearnModelTest extends FlatSpec with Matchers {
     )
     //Start lesson less001
 
-    val state0 = LessonExecutionHistory()
+    val state0 = LessonExecutionHistory
+    ()
 
     val state1 = LessonExecutionHistory(
       List(
@@ -291,7 +217,7 @@ class MLearnModelTest extends FlatSpec with Matchers {
     val toolOnlineTestResolution = URI.create("https://tools.eiipii.com/tool/toolOnlineTestResolution.xml")
 
     Lesson(
-      MLearnModel.createLessonID("less003"),
+      MLearnTypeNamespace.createLessonID("less003"),
       LessonDescription("Sprawdzam", "test", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
       Instant.now(),
       Duration.ofHours(1),
