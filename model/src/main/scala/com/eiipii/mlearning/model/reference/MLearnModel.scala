@@ -50,21 +50,24 @@ trait UserProfileProperties {
     createUserProfile(userId, "_default")
 
   def createUserProfile(userId: UserID, profileName: ProfileReference): UserProfileID =
-    Urn(userProfileIDnid, userId.nss + "#" + profileName)
+    Urn(userProfileIDnid, userId.nss + "_" + profileName)
 
 
   def extractProfileName(profile: UserProfileID): ProfileReference =
     profile.nss.split("#").last
 
   def extractUserID(profile: UserProfileID): UserID =
-    Urn(userIDnid, profile.nss.split("#").head)
+    Urn(userIDnid, profile.nss.split("_").head)
 }
 
 //Application status per user:
 
 case class MLearnApplicationState(accounts: Set[UserAccount] = Set(),
-                                  profileLectures: Map[UserProfileID, Set[Lecture]] = Map()
+                                  profileLectures: Map[UserProfileID, Set[Lecture]] = Map(),
+                                  accountLibrary: Map[UserProfileID, ResourcesLibrary] = Map()
                                  )
+
+case class ResourcesLibrary(resource: ResourcesPocket) //TODO Materialy per profile
 
 //User related information
 case class UserAccount(userID: UserID,
@@ -103,19 +106,29 @@ case class LessonDescription(title: String,
 
 case class LessonPlanPeriod(name: String, resources: ResourcesPocket)
 
-case class ResourcesPocket(materials: Set[MaterialID] = Set(), tools: Set[ToolID] = Set())
+case class ResourcesPocket(materials: Set[MaterialID] = Set(),
+                           tools: Set[ToolID] = Set(),
+                           exercises: Set[MaterialID] = Set(),
+                           tests: Set[MaterialID] = Set())
 
+
+sealed trait TeachingMaterial
+
+case class Zadanie(id: MaterialID) extends TeachingMaterial
+case class Test(id: MaterialID) extends TeachingMaterial
+case class Presentation(id: MaterialID) extends TeachingMaterial
 
 //Lesson execution model
 
-case class LessonExecutionHistory(presenceInfo: List[PresenceInformation],
-                                  lessonLog: List[LessonLogEntry])
+case class LessonExecutionHistory(lessonLog: List[LessonLogEntry] = List())
 
 sealed trait LessonLogEntry
 
-case class Activity(activityId: ActivityID, tool: ToolID, material: MaterialID)
+case class Activity(activityId: ActivityID, tool: ToolID, material: MaterialID) extends LessonLogEntry
 
-case class Result(resultId: ResultID, activity: ActivityID, userProfile: UserProfileID)
+case class Result(resultId: ResultID, activity: ActivityID, userProfile: UserProfileID) extends LessonLogEntry
+
+case class PresenceVerification(presenceInfo: List[PresenceInformation]) extends LessonLogEntry
 
 
 case class PresenceInformation(student: UserProfileID, status: PresenceStatus, attributes: Set[PresenceAttribute])

@@ -4,17 +4,43 @@ import java.net.URI
 import java.time.{Duration, Instant}
 
 import com.eiipii.mlearning.model.reference.MLearnModel.UserProfileID
-import org.scalatest.FlatSpec
+import io.lemonlabs.uri.{Uri, Urn}
+import org.scalatest.{FlatSpec, Matchers}
 
-class MLearnModelTest extends FlatSpec {
+class MLearnModelTest extends FlatSpec with Matchers {
+
+
+  it should "create userID and profiles" in {
+
+    val userID: Urn = MLearnModel.createUserID("testUser1")
+    userID.toString() shouldBe ("urn:mlearn-user:testUser1")
+
+    val profile1 = MLearnModel.createUserProfile(userID, "NauczycielSTO")
+    val profile2 = MLearnModel.createUserProfile(userID, "EnglishOK")
+    profile1.toString() shouldBe ("urn:mlearn-userProfile:testUser1_NauczycielSTO")
+    profile2.toString() shouldBe ("urn:mlearn-userProfile:testUser1_EnglishOK")
+  }
+  it should "has default profile" in {
+
+    val userID: Urn = MLearnModel.createUserID("testUser1")
+    userID.toString() shouldBe ("urn:mlearn-user:testUser1")
+
+    val defaultProfile = MLearnModel.createDefaultProfile(userID)
+
+    defaultProfile.toString() shouldBe ("urn:mlearn-userProfile:testUser1__default")
+  }
 
   it should "Create a user account" in {
 
     val initialState = MLearnApplicationState()
 
+    val userID = MLearnModel.createUserID("user1")
+    val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(userID)
+
     val userAdded = MLearnApplicationState(
       Set(
-        UserAccount(MLearnModel.createUserID("user1"), "user1@eiipii.com")
+        UserAccount(userID, "user1@eiipii.com", validated = false, Set(),
+          Map(defaultProfileID -> UserProfile(defaultProfileID, false)))
       )
     )
 
@@ -49,7 +75,7 @@ class MLearnModelTest extends FlatSpec {
         UserAccount(userID, "user1@eiipii.com", validated = true)
       )
     )
-
+    //Administrator accepts requests, then:
     val defaultProfileID: UserProfileID = MLearnModel.createDefaultProfile(userID)
     val afterProfileToTeacher = MLearnApplicationState(
       Set(
@@ -170,6 +196,9 @@ class MLearnModelTest extends FlatSpec {
 
     val tool1 = URI.create("https://tools.eiipii.com/example/quizApp.xml")
     val tool2 = URI.create("https://tools.eiipii.com/example/losowanie.xml")
+
+    val exercise1 = URI.create("https://tools.eiipii.com/exercise/exercise1.xml")
+    val testFinalny = URI.create("https://tools.eiipii.com/test/test2.xml")
     val toolOnlineJavascriptIDE = URI.create("https://tools.eiipii.com/example/javascriptOnlineIDE.xml")
 
     val lectureAfterLessonPlan = Lecture(
@@ -198,12 +227,100 @@ class MLearnModelTest extends FlatSpec {
           Duration.ofHours(1),
           List(
             LessonPlanPeriod("Teoria", ResourcesPocket(Set(material1, material3), Set(tool2))),
-            LessonPlanPeriod("Cwiczenia", ResourcesPocket(Set(material1, material3), Set(tool2))),
+            LessonPlanPeriod("Cwiczenia", ResourcesPocket(Set(material1, material3), Set(tool2), Set(exercise1))),
             LessonPlanPeriod("Przyklady niepoprawnych obliczen", ResourcesPocket(Set(material1, material3), Set(tool2))),
             LessonPlanPeriod("Cwiczenia z wartosciami granicznymi", ResourcesPocket(Set(material3), Set(toolOnlineJavascriptIDE))
             )
           )
+        ),
+        Lesson(
+          MLearnModel.createLessonID("less003"),
+          LessonDescription("Sprawdzam", "test", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
+          Instant.now(),
+          Duration.ofHours(1),
+          List(
+            LessonPlanPeriod("_default", ResourcesPocket(Set(), Set(), Set(), Set(testFinalny)))
+          )
         )
+      )
+    )
+
+  }
+
+  it should "execute a Lesson" in {
+
+    val material1 = URI.create("https://material.eiipii.com/example/material1.pdf")
+    val material2 = URI.create("https://material.eiipii.com/example/material2.pdf")
+    val material3 = URI.create("https://material.eiipii.com/example/material3.pdf")
+
+    val tool1 = URI.create("https://tools.eiipii.com/example/quizApp.xml")
+    val tool2 = URI.create("https://tools.eiipii.com/example/losowanie.xml")
+    val student1 = MLearnModel.createUserID("student1")
+    val student2 = MLearnModel.createUserID("student2")
+    val student3 = MLearnModel.createUserID("student2")
+    //For lesson
+    Lesson(
+      MLearnModel.createLessonID("less001"),
+      LessonDescription("Wstep do programowanie", "Co robia komputery i dlaczego. ...", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
+      Instant.now(),
+      Duration.ofHours(1),
+      List(
+        LessonPlanPeriod("_default", ResourcesPocket(Set(material1, material2), Set(tool1)))
+      )
+    )
+    //Start lesson less001
+
+    val state0 = LessonExecutionHistory()
+
+    val state1 = LessonExecutionHistory(
+      List(
+        PresenceVerification(
+          List(
+            PresenceInformation(student1, PresenceStatus.present, Set()),
+            PresenceInformation(student2, PresenceStatus.present, Set(PresenceAttribute.delayed))
+          )
+        ),
+        Activity(???, tool1, material1),
+        Activity(???, tool1, material2)
+      )
+    )
+
+
+    //For test lesson
+    val testFinalny = URI.create("https://tools.eiipii.com/test/test2.xml")
+    val toolOnlineTestResolution = URI.create("https://tools.eiipii.com/tool/toolOnlineTestResolution.xml")
+
+    Lesson(
+      MLearnModel.createLessonID("less003"),
+      LessonDescription("Sprawdzam", "test", "Zrozumienie dlaczego uzywamy komputerow i piszemy programy"),
+      Instant.now(),
+      Duration.ofHours(1),
+      List(
+        LessonPlanPeriod("_default", ResourcesPocket(Set(), Set(), Set(), Set(testFinalny)))
+      )
+    )
+
+
+    val stateX0 = LessonExecutionHistory()
+    val stateX1 = LessonExecutionHistory(
+      List(
+        PresenceVerification(
+          List(
+            PresenceInformation(student1, PresenceStatus.present, Set()),
+            PresenceInformation(student2, PresenceStatus.present, Set(PresenceAttribute.delayed))
+          )
+        )
+      )
+    )
+    val stateX2 = LessonExecutionHistory(
+      List(
+        PresenceVerification(
+          List(
+            PresenceInformation(student1, PresenceStatus.present, Set()),
+            PresenceInformation(student2, PresenceStatus.present, Set(PresenceAttribute.delayed))
+          )
+        ),
+        Activity(???, toolOnlineTestResolution, testFinalny)
       )
     )
 

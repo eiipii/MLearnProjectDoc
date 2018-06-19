@@ -5,7 +5,7 @@ MLearn User
 -----------
 
 Identifier: URN
-Schema: urn:mlearn:user:NSS_PARTIAL
+Schema: urn:mlearn-user:NSS_PARTIAL
 
 Uniquely identifier account.
 
